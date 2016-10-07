@@ -1,0 +1,22 @@
+- Install Node
+- install npm
+
+Make sure node is at least 6.6.0
+node --version
+
+Update Node: http://askubuntu.com/questions/426750/how-can-i-update-my-nodejs-to-the-latest-version
+
+- npm install
+
+- cd into config, edit default.json
+  - Add IPs
+  - Add headers
+
+
+- install pm2 to run in production (globally)
+ PM2 guide https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-14-04
+
+Make sure IPv6 ips are registered in /etc/network/interfaces, ex:
+iface eth0 inet6 static
+        address IPHERE
+        netmask 64

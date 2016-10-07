@@ -1,0 +1,8 @@
+{
+  "ips": [
+   "each ip here"
+  ],
+  "headers": [
+   { "X-API-KEY", "SOME KEY" }
+  ]
+}
