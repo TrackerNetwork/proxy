@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "config": "^1.21.0",
+    "node-statsd": "^0.1.1",
     "pmx": "^0.6.8",
     "request": "^2.75.0"
   }
