@@ -37,6 +37,9 @@ function onRequest(req, res) {
 	if (req.headers && req.headers.authorization) {
 	   headers.authorization = req.headers.authorization;
 	}
+	if (req.headers['x-api-key']) {
+	   headers['x-api-key'] = req.headers['x-api-key'];
+	}	
 	
         var internalRequest = request({
             url: queryData.url,
