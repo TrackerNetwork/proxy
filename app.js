@@ -1,6 +1,6 @@
 require('pmx').init({
-  http : true,
-  network: true
+    http: true,
+    network: true
 });
 
 var http = require('http');
@@ -9,7 +9,7 @@ var request = require('request');
 var config = require('config');
 var probe = require('pmx').probe();
 var StatsD = require('node-statsd'),
-      client = new StatsD();
+    client = new StatsD();
 
 http.createServer(onRequest).listen(80);
 
@@ -21,63 +21,60 @@ console.log('Loading on IPs: ' + ips);
 
 function onRequest(req, res) {
 
-    var queryData = url.parse(req.url, true).query;   
-      
+    var queryData = url.parse(req.url, true).query;
+
     var ip = ips[Math.floor(Math.random() * ips.length)];
-   
+
     //console.log('Proxying on ip: ' + ip + ' -- ' + decodeURIComponent(req.url));
-    
+
     if (queryData.url) {
-	counter++;
-	statsd++;
-	
-	var headers = Object.assign({}, config.get('headers')[0]);
-	
-	//console.log('Proxying on ip: ' + ip + ' -- ' + queryData.url);	
-	if (req.headers && req.headers.authorization) {
-	   headers.authorization = req.headers.authorization;
-	}
-	if (req.headers['x-api-key']) {
-	   headers['x-api-key'] = req.headers['x-api-key'];
-	}	
-	
+        counter++;
+        statsd++;
+
+        var headers = Object.assign({}, config.get('headers')[0]);
+
+        //console.log('Proxying on ip: ' + ip + ' -- ' + queryData.url);	
+        if (req.headers && req.headers.authorization) {
+            headers.authorization = req.headers.authorization;
+        }
+        if (req.headers['x-api-key']) {
+            headers['x-api-key'] = req.headers['x-api-key'];
+        }
+
         var internalRequest = request({
             url: queryData.url,
-	    family: 6,
-	    localAddress: ip,	   
+            family: 6,
+            localAddress: ip,
             headers: headers,
-	    time: true
+            time: true
         });
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        
-	internalRequest
-	  .on('error', function(e) {
-           console.log('error: '+ e);
-	   res.statusCode = 500;
-	   res.end('error 500: ' + e);	    
-          }) 
-          .pipe(res);
-   
-    }
-    else {
+
+        internalRequest
+            .on('error', function(e) {
+                console.log('error: ' + e);
+                res.statusCode = 500;
+                res.end('error 500: ' + e);
+            })
+            .pipe(res);
+
+    } else {
         //res.end('No url found');
-	res.end('loaderio-1e4ac91768b2952d177a51207bc4e3ac');
+        res.end('loaderio-1e4ac91768b2952d177a51207bc4e3ac');
     }
 }
 
 var metric = probe.metric({
-  name    : 'Requests',
-  value   : function() {
-    return counter;
-  }
+    name: 'Requests',
+    value: function() {
+        return counter;
+    }
 });
 
-var last = 0; 
-var timer = setInterval(function() { 
-   client.increment('proxy_request', statsd - last);       
-   last = statsd;
+var last = 0;
+var timer = setInterval(function() {
+    client.increment('proxy_request', statsd - last);
+    last = statsd;
 }, 1000);
-
-
