@@ -31,7 +31,7 @@ function onRequest(req, res) {
 	counter++;
 	statsd++;
 	
-	var headers = config.get('headers')[0];
+	var headers = Object.assign({}, config.get('headers')[0]);
 	
 	//console.log('Proxying on ip: ' + ip + ' -- ' + queryData.url);	
 	if (req.headers && req.headers.authorization) {
@@ -45,7 +45,7 @@ function onRequest(req, res) {
             url: queryData.url,
 	    family: 6,
 	    localAddress: ip,	   
-            headers: config.get('headers')[0],
+            headers: headers,
 	    time: true
         });
         res.setHeader('Access-Control-Allow-Origin', '*');
