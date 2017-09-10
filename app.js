@@ -31,7 +31,12 @@ function onRequest(req, res) {
 	counter++;
 	statsd++;
 	
+	var headers = config.get('headers')[0];
+	
 	//console.log('Proxying on ip: ' + ip + ' -- ' + queryData.url);	
+	if (req.headers && req.headers.authorization) {
+	   headers.authorization = req.headers.authorization;
+	}
 	
         var internalRequest = request({
             url: queryData.url,
